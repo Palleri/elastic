@@ -1,0 +1,66 @@
+version: "3.0"
+services:
+  elasticsearch:
+    container_name: es-container
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.3.3
+    hostname: es
+    domainname: mario.se
+    environment:
+      - xpack.security.enabled=true
+      - xpack.security.authc.api_key.enabled=true
+        #      - xpack.security.authc.api_key.enabled=true
+        #      - xpack.security.http.ssl.enabled=true
+        #      - xpack.license.self_generated.type=trial 
+        #      - xpack.security.http.ssl.key=/usr/share/elasticsearch/config/cert/es.key
+        #      - xpack.security.http.ssl.certificate_authorities=/usr/share/elasticsearch/config/cert/ca.pem
+        #      - xpack.security.http.ssl.certificate=/usr/share/elasticsearch/config/cert/es.crt
+        #      - xpack.security.transport.ssl.enabled=true
+        #      - xpack.security.transport.ssl.verification_mode=certificate 
+        #      - xpack.security.transport.ssl.certificate_authorities=/usr/share/elasticsearch/config/cert/ca.pem
+        #      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/cert/es.crt
+        #      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/cert/es.key
+        #      - xpack.security.transport.ssl.verification_mode=certificate
+      - "discovery.type=single-node"
+        #      - ELASTIC_USERNAME=elastic
+      - ELASTIC_PASSWORD=test
+    networks:
+      ext:
+        ipv4_address: 10.0.20.123
+    ports:
+      - 9200:9200
+    dns:
+      - 10.0.10.1
+    volumes:
+      - ./elasticsearch:/usr/share/elasticsearch/data
+        #      - ./cert:/usr/share/elasticsearch/config/cert
+  kibana:
+    container_name: kb-container
+    image: docker.elastic.co/kibana/kibana:8.3.3
+    networks:
+      ext:
+        ipv4_address: 10.0.20.124
+    dns: 
+      - 10.0.10.1
+    environment:
+      - ELASTICSEARCH_HOSTS=http://es.mario.se:9200
+      - xpack.security.enabled=true
+        #      - xpack.encryptedSavedObjects.encryptionKey=something_at_least_32_characters
+        #      - XPACK_SECURITY_ENABLED=true
+      - ELASTICSEARCH_USERNAME=kibana_system
+      - ELASTICSEARCH_PASSWORD=QYRiInFdD5xdHtr0Yne7
+        #      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=/usr/share/kibana/config/cert/ca.pem
+        #      - ELASTICSEARCH_SSL_VERIFICATIONMODE=certificate
+        #      - SERVER_SSL_ENABLED=true
+        #      - SERVER_SSL_KEY=/usr/share/kibana/config/cert/kibana.key
+        #      - SERVER_SSL_CERTIFICATE=/usr/share/kibana/config/cert/kibana.crt
+        #      - SERVER_SSL_PASSWORD=kb
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5601:5601
+    volumes:
+      - ./kibana:/usr/share/kibana/data
+      - ./cert:/usr/share/kibana/config/cert
+networks:
+  ext:
+    external: true
