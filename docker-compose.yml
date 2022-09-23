@@ -4,7 +4,7 @@ services:
     container_name: es-container
     image: docker.elastic.co/elasticsearch/elasticsearch:8.3.3
     hostname: es
-    domainname: mario.se
+    domainname: xx.xx
     environment:
       - xpack.security.enabled=true
       - xpack.security.authc.api_key.enabled=true
@@ -42,7 +42,7 @@ services:
     dns: 
       - 10.0.10.1
     environment:
-      - ELASTICSEARCH_HOSTS=http://es.mario.se:9200
+      - ELASTICSEARCH_HOSTS=http://es.xxx.xx:9200
       - xpack.security.enabled=true
         #      - xpack.encryptedSavedObjects.encryptionKey=something_at_least_32_characters
         #      - XPACK_SECURITY_ENABLED=true
